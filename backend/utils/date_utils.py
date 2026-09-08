@@ -35,18 +35,18 @@ DAY_TO_NAME_MAP = {
     31: "thirty-first"
 }
 
-def get_date_suffix(day):
+def get_date_suffix(day: int) -> str:
     if 11 <= day <= 13:
         return 'th'
     
     last_digit = day % 10
     return {1: 'st', 2: 'nd', 3:'rd'}.get(last_digit, 'th')
 
-def get_todays_date(): 
+def get_todays_date() -> str: 
     return date.today().strftime("%d/%m/%Y")
 
 # There are many ways to represent a day in a quote, need this to get all of them based on dd/mm/yyyy
-def get_perumtations_of_date(date):
+def get_perumtations_of_date(date: str) -> tuple[str, str, str, str]:
     day, month, year = date.split('/')
     full_month = calendar.month_name[int(month)]
     abbr_month = calendar.month_abbr[int(month)]
