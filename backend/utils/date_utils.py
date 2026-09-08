@@ -1,5 +1,6 @@
 from datetime import date
 import calendar
+import holidays
 
 DAY_TO_NAME_MAP = {
     1: "first",
@@ -43,11 +44,19 @@ def get_date_suffix(day: int) -> str:
     return {1: 'st', 2: 'nd', 3:'rd'}.get(last_digit, 'th')
 
 def get_todays_date() -> str: 
-    return date.today().strftime("%d/%m/%Y")
+    return date.today().strftime("%m/%d/%Y")
+
+def get_todays_us_holiday(date: str) -> str | None:
+    us_holidays = holidays.US()
+    return us_holidays.get(date)
 
 # There are many ways to represent a day in a quote, need this to get all of them based on dd/mm/yyyy
-def get_perumtations_of_date(date: str) -> tuple[str, str, str, str]:
-    day, month, year = date.split('/')
+def get_perumtations_of_date(date: str) -> tuple[str, str, str, str] | tuple[str, str, str, str, str]:
+    month, day, year = date.split('/')
     full_month = calendar.month_name[int(month)]
     abbr_month = calendar.month_abbr[int(month)]
-    return (f'{full_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month} {DAY_TO_NAME_MAP[int(day)]}', f'{full_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month} {str(int(day))}{get_date_suffix(int(day))}')
+    holiday = get_todays_us_holiday(date)
+    if holiday is None:
+        return (f'{full_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month} {DAY_TO_NAME_MAP[int(day)]}', f'{full_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month} {str(int(day))}{get_date_suffix(int(day))}')
+    else: 
+        return (holiday, f'{full_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month} {DAY_TO_NAME_MAP[int(day)]}', f'{full_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month} {str(int(day))}{get_date_suffix(int(day))}')
