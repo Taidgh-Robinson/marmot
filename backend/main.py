@@ -1,5 +1,6 @@
 from clients.quodb_client import QuoDBClient
 from models.quote_context import QuoteContext
+from utils.date_utils import get_perumtations_of_date
 from typing import List
 import httpx
 import asyncio
@@ -10,16 +11,23 @@ def assemble_quote(contexts: List[QuoteContext]):
         ret += context.phrase + ' '
     return ret
 
-
-async def main():
+async def print_oct_3rd_movie_quotes():
     client = httpx.AsyncClient()
     qdbc = QuoDBClient(client)
-    data = await qdbc.get_all_quote_docs("October 3rd", "10")
-    for quote in data:
-        contexts = await qdbc.get_quote_contexts(quote)
-        print(assemble_quote(contexts))
-        print()
 
+    days = get_perumtations_of_date('3/10/2026')
+    for day in days:
+        data = await qdbc.get_all_quote_docs(day, "10")
+        for quote in data:
+            #Filter out TV shows
+            if not quote.serie:
+                contexts = await qdbc.get_quote_contexts(quote)
+                print(quote.title + ' - ' + assemble_quote(contexts))
+                print()
+
+
+async def main():
+    await print_oct_3rd_movie_quotes()
 
 if __name__ == "__main__":
     asyncio.run(main())
