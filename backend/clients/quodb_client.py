@@ -1,6 +1,7 @@
 import httpx
 from models.quote_doc import QuoteDoc
 from models.quote_context import QuoteContext
+from models.movie_quote import MovieQuote
 from typing import List
 
 
@@ -33,3 +34,15 @@ class QuoDBClient:
         )
         resp_docs = resp.json()["docs"]
         return [QuoteContext(**doc) for doc in resp_docs]
+
+    async def get_all_full_movie_quotes_for_day(self, day: str, titles_per_page: str = '10') -> List[MovieQuote]:
+        quotes = []        
+        data = await self.get_all_quote_docs(day, titles_per_page)
+        for quote in data:
+            #Filter out TV shows
+            if not quote.serie:
+                contexts = await self.get_quote_contexts(quote)
+                full_quote = MovieQuote(quote_doc=quote, quote_contexts=contexts)
+                quotes.append(full_quote)
+
+        return quotes

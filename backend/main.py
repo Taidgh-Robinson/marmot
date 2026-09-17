@@ -5,11 +5,6 @@ from typing import List
 import httpx
 import asyncio
 
-def assemble_quote(contexts: List[QuoteContext]):
-    ret = ''
-    for context in contexts:
-        ret += context.phrase + ' '
-    return ret
 
 async def print_oct_3rd_movie_quotes():
     client = httpx.AsyncClient()
@@ -17,13 +12,10 @@ async def print_oct_3rd_movie_quotes():
 
     days = get_perumtations_of_date('10/03/2026')
     for day in days:
-        data = await qdbc.get_all_quote_docs(day, "10")
+        data = await qdbc.get_all_full_movie_quotes_for_day(day)
         for quote in data:
-            #Filter out TV shows
-            if not quote.serie:
-                contexts = await qdbc.get_quote_contexts(quote)
-                print(quote.title + ' - ' + assemble_quote(contexts))
-                print()
+            print(quote.quote_doc.title + ' - ' + quote.display_full_quote())
+            print()
 
 async def print_july_4th_movie_quotes():
     client = httpx.AsyncClient()
@@ -31,13 +23,10 @@ async def print_july_4th_movie_quotes():
 
     days = get_perumtations_of_date('07/04/2026')
     for day in days:
-        data = await qdbc.get_all_quote_docs(day, "10")
+        data = await qdbc.get_all_full_movie_quotes_for_day(day)
         for quote in data:
-            #Filter out TV shows
-            if not quote.serie:
-                contexts = await qdbc.get_quote_contexts(quote)
-                print(quote.title + ' - ' + assemble_quote(contexts))
-                print()
+            print(quote.quote_doc.title + ' - ' + quote.display_full_quote())
+            print()
 
 
 async def main():
