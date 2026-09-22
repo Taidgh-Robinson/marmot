@@ -1,5 +1,5 @@
 from litellm import acompletion
-from config.llm_config import LLMConfig
+from src.config.llm_config import LLMConfig
 
 
 class LLMClient():

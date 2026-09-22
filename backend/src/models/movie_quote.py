@@ -2,8 +2,8 @@ from __future__ import annotations
 from pydantic import BaseModel
 from typing import List
 
-from models.quote_doc import QuoteDoc 
-from models.quote_context import QuoteContext
+from src.models.quote_doc import QuoteDoc 
+from src.models.quote_context import QuoteContext
 
 class MovieQuote(BaseModel):
     quote_doc: QuoteDoc

@@ -51,12 +51,12 @@ def get_todays_us_holiday(date: str) -> str | None:
     return us_holidays.get(date)
 
 # There are many ways to represent a day in a quote, need this to get all of them based on dd/mm/yyyy
-def get_perumtations_of_date(date: str) -> tuple[str, str, str, str] | tuple[str, str, str, str, str]:
+def get_perumtations_of_date(date: str) -> tuple[str, ...]:
     month, day, year = date.split('/')
     full_month = calendar.month_name[int(month)]
     abbr_month = calendar.month_abbr[int(month)]
     holiday = get_todays_us_holiday(date)
     if holiday is None:
-        return (f'{full_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month} {DAY_TO_NAME_MAP[int(day)]}', f'{full_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month} {str(int(day))}{get_date_suffix(int(day))}')
+        return (f'{full_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month}. {DAY_TO_NAME_MAP[int(day)]}', f'{full_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month}. {str(int(day))}{get_date_suffix(int(day))}')
     else: 
-        return (holiday, f'{full_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month} {DAY_TO_NAME_MAP[int(day)]}', f'{full_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month} {str(int(day))}{get_date_suffix(int(day))}')
+        return (holiday, f'{full_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month}. {DAY_TO_NAME_MAP[int(day)]}', f'{full_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month}. {str(int(day))}{get_date_suffix(int(day))}')

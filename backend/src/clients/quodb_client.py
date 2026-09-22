@@ -1,7 +1,7 @@
 import httpx
-from models.quote_doc import QuoteDoc
-from models.quote_context import QuoteContext
-from models.movie_quote import MovieQuote
+from src.models.quote_doc import QuoteDoc
+from src.models.quote_context import QuoteContext
+from src.models.movie_quote import MovieQuote
 from typing import List
 
 

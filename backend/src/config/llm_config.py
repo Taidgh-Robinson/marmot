@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from config.env_file_config import ENV_FILE
+from src.config.env_file_config import ENV_FILE
 
 
 class LLMConfig(BaseSettings):
