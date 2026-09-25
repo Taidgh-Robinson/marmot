@@ -22,7 +22,7 @@ DAY_TO_NAME_MAP = {
     17: "seventeenth",
     18: "eighteenth",
     19: "nineteenth",
-    20: "twentieth", 
+    20: "twentieth",
     21: "twenty-first",
     22: "twenty-second",
     23: "twenty-third",
@@ -33,30 +33,49 @@ DAY_TO_NAME_MAP = {
     28: "twenty-eighth",
     29: "twenty-nineth",
     30: "thirtieth",
-    31: "thirty-first"
+    31: "thirty-first",
 }
+
 
 def get_date_suffix(day: int) -> str:
     if 11 <= day <= 13:
-        return 'th'
-    
-    last_digit = day % 10
-    return {1: 'st', 2: 'nd', 3:'rd'}.get(last_digit, 'th')
+        return "th"
 
-def get_todays_date() -> str: 
+    last_digit = day % 10
+    return {1: "st", 2: "nd", 3: "rd"}.get(last_digit, "th")
+
+
+def get_todays_date() -> str:
     return date.today().strftime("%m/%d/%Y")
+
 
 def get_todays_us_holiday(date: str) -> str | None:
     us_holidays = holidays.US()
     return us_holidays.get(date)
 
+
 # There are many ways to represent a day in a quote, need this to get all of them based on dd/mm/yyyy
 def get_perumtations_of_date(date: str) -> tuple[str, ...]:
-    month, day, year = date.split('/')
+    month, day, year = date.split("/")
     full_month = calendar.month_name[int(month)]
     abbr_month = calendar.month_abbr[int(month)]
     holiday = get_todays_us_holiday(date)
     if holiday is None:
-        return (f'{full_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month}. {DAY_TO_NAME_MAP[int(day)]}', f'{full_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month}. {str(int(day))}{get_date_suffix(int(day))}')
-    else: 
-        return (holiday, f'{full_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month} {DAY_TO_NAME_MAP[int(day)]}', f'{abbr_month}. {DAY_TO_NAME_MAP[int(day)]}', f'{full_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month} {str(int(day))}{get_date_suffix(int(day))}', f'{abbr_month}. {str(int(day))}{get_date_suffix(int(day))}')
+        return (
+            f"{full_month} {DAY_TO_NAME_MAP[int(day)]}",
+            f"{abbr_month} {DAY_TO_NAME_MAP[int(day)]}",
+            f"{abbr_month}. {DAY_TO_NAME_MAP[int(day)]}",
+            f"{full_month} {str(int(day))}{get_date_suffix(int(day))}",
+            f"{abbr_month} {str(int(day))}{get_date_suffix(int(day))}",
+            f"{abbr_month}. {str(int(day))}{get_date_suffix(int(day))}",
+        )
+    else:
+        return (
+            holiday,
+            f"{full_month} {DAY_TO_NAME_MAP[int(day)]}",
+            f"{abbr_month} {DAY_TO_NAME_MAP[int(day)]}",
+            f"{abbr_month}. {DAY_TO_NAME_MAP[int(day)]}",
+            f"{full_month} {str(int(day))}{get_date_suffix(int(day))}",
+            f"{abbr_month} {str(int(day))}{get_date_suffix(int(day))}",
+            f"{abbr_month}. {str(int(day))}{get_date_suffix(int(day))}",
+        )
