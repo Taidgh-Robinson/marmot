@@ -12,10 +12,7 @@ async def full_quote_pipeline(quoDBClient, day_to_fetch):
 
     #Filter out quotes that don't actually contain the date
     #Ex. She had not completed a play in seven years. 17 October, third examination of Dudley Heinsbergen shows up for Oct 3rd. 
-    filtered_quotes = []
-    for quote in all_quotes:
-        if(quote_has_date(quote.display_full_quote(), days)):
-            filtered_quotes.append(quote)
+    filtered_quotes = [quote for quote in all_quotes if quote_has_date(quote.display_full_quote(), days)]
 
     #TODO: Crop quotes using LLM
     #TODO: Filter cropped quotes to those that still contain the date
