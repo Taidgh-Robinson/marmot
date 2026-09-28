@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-users-table
+      author: alex
+      changes:
+        - sqlFile:
+            path: sql/001-create-date-to-quote-table.sql
+            relativeToChangelogFile: true
+            splitStatements: true
+            stripComments: true

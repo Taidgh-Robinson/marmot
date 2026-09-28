@@ -1,0 +1,3 @@
+databaseChangeLog:
+  - include:
+      file: changelogs/changes/001-create-date-to-quote-table.yaml
