@@ -1,0 +1,5 @@
+CREATE TABLE MOVIE (
+    title VARCHAR(256) PRIMARY KEY, 
+    poster VARCHAR(1024), 
+    imdb_id VARCHAR(256)
+);
