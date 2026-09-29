@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: 002-create-movie-table
+      id: 003-alter-date-to-quote-table
       author: taidgh
       changes:
         - sqlFile:
-            path: sql/002-create-movie-table.sql
+            path: sql/003-alter-table-date-to-quote.sql
             relativeToChangelogFile: true
             splitStatements: true
             stripComments: true

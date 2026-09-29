@@ -1,4 +1,7 @@
 databaseChangeLog:
   - include:
       file: changelogs/changes/001-create-date-to-quote-table.yaml
+  - include:
       file: changelogs/changes/002-create-movie-table.yaml
+  - include:
+      file: changelogs/changes/003-alter-table-date-to-quote.yaml
