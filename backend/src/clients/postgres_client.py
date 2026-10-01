@@ -1,7 +1,6 @@
 from src.config.postgres_config import PostgresConfig
 from src.models.database_models.movie_record import MovieRecord
 from src.models.database_models.date_to_quote_record import DateToQuoteRecord
-
 import asyncio
 import asyncpg
 

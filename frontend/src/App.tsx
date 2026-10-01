@@ -1,7 +1,7 @@
 import '@mantine/core/styles.css';
+import useSWR from 'swr';
 
 import {
-  Button,
   Center,
   Container,
   MantineProvider,
@@ -12,6 +12,14 @@ import {
 } from '@mantine/core';
 
 function QuoteApp() {
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { data, error, isLoading } = useSWR('http://localhost:8000/quote_of_the_day', fetcher);
+
+  if (error) return <div>Failed to load user.</div>;
+  if (isLoading) return <div>Loading...</div>;
+
+  console.log(data)
+
   return (
     <Center mih="100vh">
       <Container size="sm">

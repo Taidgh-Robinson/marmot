@@ -1,6 +1,7 @@
 # Temp file so I can still use main to test logic, will be moved up to main later
 import httpx
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from src.api.routers.quote_router import router as quote_router
 from contextlib import asynccontextmanager
 from pyliquibase import Pyliquibase
@@ -25,5 +26,17 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+
+origins = [
+    "http://localhost:5173",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app.include_router(quote_router)
