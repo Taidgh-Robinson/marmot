@@ -26,6 +26,7 @@ async def full_quote_pipeline(quoDBClient: QuoDBClient, day_to_fetch, llmClient:
         if quote_has_date(quote.display_full_quote(), days)
     ]
 
+    # Crop  quotes using an LLM
     for quote in filtered_quotes:
         logger.info(f"Going to crop full quote: {quote.display_full_quote()} from movie: {quote.quote_doc.title}.")
         llm_response = await llmClient.query_llm(generate_crop_query(quote.quote_doc.title, quote.display_full_quote()))
@@ -33,6 +34,7 @@ async def full_quote_pipeline(quoDBClient: QuoDBClient, day_to_fetch, llmClient:
         logger.info(f"LLM returned: {crop}.")
         quote.llm_cropped_quote = crop
 
+    # Filter out cropped quotes that dont have the date in them
     filtered_llm_cropped_quotes = [
         quote
         for quote in filtered_quotes
@@ -42,6 +44,7 @@ async def full_quote_pipeline(quoDBClient: QuoDBClient, day_to_fetch, llmClient:
     if len(filtered_llm_cropped_quotes) == 0:
         logger.info("No filtered quotes for the day!")
 
+    # TODO Score and save
     if len(filtered_llm_cropped_quotes) > 0:
         temp_quote = filtered_llm_cropped_quotes[0]
         movie_title = temp_quote.quote_doc.title
@@ -63,7 +66,5 @@ async def full_quote_pipeline(quoDBClient: QuoDBClient, day_to_fetch, llmClient:
             logger.error(f"Failed to store movie with error {e}")
 
 
-    # TODO: Score Quote Using LLM to find the quote of day
-
-
+    # Return all data
     return {"all": all_quotes, "filtered_quotes": filtered_quotes, "filtered_llm_cropped_quotes": filtered_llm_cropped_quotes}

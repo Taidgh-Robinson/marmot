@@ -10,30 +10,15 @@ import {
   Text,
   Title,
 } from '@mantine/core';
+import { QuoteRenderer } from './components/quote/QuoteRenderer';
 
 function QuoteApp() {
-  const fetcher = (url) => fetch(url).then((res) => res.json());
-  const { data, error, isLoading } = useSWR('http://localhost:8000/quote_of_the_day', fetcher);
-
-  if (error) return <div>Failed to load user.</div>;
-  if (isLoading) return <div>Loading...</div>;
-
-  console.log(data)
-
-  return (
+  
+  return (<div>
+    <QuoteRenderer /> 
     <Center mih="100vh">
-      <Container size="sm">
-        <Paper shadow="md" radius="lg" p="xl">
-          <Stack align="center">
-            <Title order={1}>MOVIE TITLE GOES HERE</Title>
-
-            <Text size="xl" ta="center" fs="italic">
-              MOVIE QUOTE GOES HERE
-            </Text>
-          </Stack>
-        </Paper>
-      </Container>
     </Center>
+    </div>
   );
 }
 
