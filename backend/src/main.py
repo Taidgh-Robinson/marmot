@@ -26,7 +26,10 @@ async def get_july_4th_movie_quotes():
     return pipeline
 
 async def main():
-    print("--- october 3rd quotes ---")
+    print("--- july 4th quotes ---")
+    oct_3rd = await get_july_4th_movie_quotes()
+    for quote in oct_3rd['filtered_quotes']:
+        print(f'{quote.display_full_quote()} - {quote.llm_cropped_quotec}')
 
 
 
