@@ -1,6 +1,6 @@
 from __future__ import annotations
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 from src.models.quote_doc import QuoteDoc
 from src.models.quote_context import QuoteContext
@@ -9,6 +9,7 @@ from src.models.quote_context import QuoteContext
 class MovieQuote(BaseModel):
     quote_doc: QuoteDoc
     quote_contexts: List[QuoteContext]
+    llm_cropped_quote: Optional[str] = None
 
     def display_full_quote(self):
         full_quote = ""
