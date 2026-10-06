@@ -26,8 +26,20 @@ async def full_quote_pipeline(quoDBClient: QuoDBClient, day_to_fetch, llmClient:
         if quote_has_date(quote.display_full_quote(), days)
     ]
 
+    logger.info(f"Size of filtered quotes: {len(filtered_quotes)}")
+
+    seen = set()
+    unique_filtered_quotes = []
+    for q in filtered_quotes:
+        quote_str = q.display_full_quote()
+        if quote_str not in seen:
+            seen.add(quote_str)
+            unique_filtered_quotes.append(q)
+
+    logger.info(f"Size of filtered quotes: {len(unique_filtered_quotes)}")
+
     # Crop  quotes using an LLM
-    for quote in filtered_quotes:
+    for quote in unique_filtered_quotes:
         logger.info(f"Going to crop full quote: {quote.display_full_quote()} from movie: {quote.quote_doc.title}.")
         llm_response = await llmClient.query_llm(generate_crop_query(quote.quote_doc.title, quote.display_full_quote()))
         crop = llm_response.choices[0].message.content
@@ -37,7 +49,7 @@ async def full_quote_pipeline(quoDBClient: QuoDBClient, day_to_fetch, llmClient:
     # Filter out cropped quotes that dont have the date in them
     filtered_llm_cropped_quotes = [
         quote
-        for quote in filtered_quotes
+        for quote in unique_filtered_quotes
         if quote_has_date(quote.llm_cropped_quote, days)
     ]
 
@@ -48,10 +60,13 @@ async def full_quote_pipeline(quoDBClient: QuoDBClient, day_to_fetch, llmClient:
     if len(filtered_llm_cropped_quotes) > 0:
         temp_quote = filtered_llm_cropped_quotes[0]
         movie_title = temp_quote.quote_doc.title
-        movie_data = await omdbAPIClient.get_movie_info(movie_title)
+        try:
+            movie_data = await omdbAPIClient.get_movie_info(movie_title)
+        except Exception as e:
+            logger.info(f"Failed to fetch movie from omdb! {e}")
         movie = None
         if movie_data:
-            movie_record = MovieRecord(movie_data.Title, movie_data.Poster, movie_data.imdbID)
+            movie_record = MovieRecord(title=movie_data.Title, poster=movie_data.Poster, imdb_id=movie_data.imdbID)
             try:
                 await postgresClient.insert_into_movie(movie_record)
             except Exception as e:
