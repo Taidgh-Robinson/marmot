@@ -1,5 +1,6 @@
 import useSWR from "swr";
 import type { Quote } from "./types";
+import { API_BASE_URL } from "../../config"
 
 import {
   Center,
@@ -11,6 +12,7 @@ import {
   Text,
   Title,
 } from "@mantine/core";
+
 
 export function QuoteRenderer() {
   const quoteFetcher = async (url: string): Promise<Quote> => {
@@ -24,7 +26,7 @@ export function QuoteRenderer() {
   };
 
   const { data, error, isLoading } = useSWR(
-    "http://localhost:8000/get_quote?date=07/04/2026",
+    `${API_BASE_URL}/get_quote?date=07/04/2026`,
     quoteFetcher
   );
 
