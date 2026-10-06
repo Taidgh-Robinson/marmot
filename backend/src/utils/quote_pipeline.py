@@ -3,11 +3,23 @@ from src.config.logging_config import logger
 from src.utils.quote_utils import quote_has_date
 from src.clients.quodb_client import QuoDBClient
 from src.clients.llm_client import LLMClient
-from src.constants.queries import generate_crop_query
+from src.constants.queries import generate_crop_query, generate_score_query
 from src.clients.postgres_client import PostgresClient
 from src.clients.omdbapi_client import OMDBAPIClient
 from src.models.database_models.movie_record import MovieRecord
 from src.models.database_models.date_to_quote_record import DateToQuoteRecord
+import json 
+
+def parse_score_response(response: str) -> dict:
+    response = response.strip()
+
+    if response.startswith("```"):
+        response = response.removeprefix("```json")
+        response = response.removeprefix("```")
+        response = response.removesuffix("```")
+        response = response.strip()
+
+    return json.loads(response)
 
 async def full_quote_pipeline(quoDBClient: QuoDBClient, day_to_fetch, llmClient: LLMClient, postgresClient: PostgresClient, omdbAPIClient: OMDBAPIClient):
     days = get_perumtations_of_date(day_to_fetch)
@@ -55,10 +67,24 @@ async def full_quote_pipeline(quoDBClient: QuoDBClient, day_to_fetch, llmClient:
 
     if len(filtered_llm_cropped_quotes) == 0:
         logger.info("No filtered quotes for the day!")
+        date_to_quote_record = DateToQuoteRecord(quote_date=day_to_fetch[:5], quote=None, movie=None)
+        await postgresClient.insert_into_date_to_quote(date_to_quote_record)
 
-    # TODO Score and save
     if len(filtered_llm_cropped_quotes) > 0:
-        temp_quote = filtered_llm_cropped_quotes[0]
+
+        # Score 
+        temp_quote = None
+        temp_quote_score = 0
+
+        for quote in filtered_llm_cropped_quotes:
+            llm_response = await llmClient.query_llm(generate_score_query(quote.quote_doc.title, quote.display_full_quote()))
+            score = parse_score_response(llm_response.choices[0].message.content)['total']
+            logger.info(f"LLM returned a score of {score} for quote {quote.display_full_quote()} - {quote.quote_doc.title}")
+            if int(score) > temp_quote_score:
+                temp_quote = quote
+                temp_quote_score = score 
+
+        # Save
         movie_title = temp_quote.quote_doc.title
         try:
             movie_data = await omdbAPIClient.get_movie_info(movie_title)

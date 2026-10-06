@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, Query, Depends
+from fastapi import APIRouter, Query, Depends
 from src.api.core.depdencies import get_quodb_client, get_postgres_client, get_omdb_api_client, get_llm_client
 from src.utils.quote_pipeline import full_quote_pipeline
 from src.utils.date_utils import get_todays_date
@@ -39,13 +39,13 @@ async def get_quote_of_the_day(    quodb_client: QuoDBClient = Depends(get_quodb
     if saved_quote:
         poster_url = None
         if saved_quote.movie:
-            movie = await postgres_client.fetch_movie(cached_quote.movie)
+            movie = await postgres_client.fetch_movie(saved_quote.movie)
             if movie:
                 poster_url = movie.poster
                 
-        return {"quote": cached_quote.quote, "movie": cached_quote.movie, "poster_url": poster_url}
+        return {"quote": saved_quote.quote, "movie": saved_quote.movie, "poster_url": poster_url}
 
-    return {"quote": "No quote was found for today!"}    
+    return {"quote": None}    
 
 # TODO
 @router.get("/get_quote")
@@ -74,10 +74,10 @@ async def get_quote(
     if saved_quote:
         poster_url = None
         if saved_quote.movie:
-            movie = await postgres_client.fetch_movie(cached_quote.movie)
+            movie = await postgres_client.fetch_movie(saved_quote.movie)
             if movie:
                 poster_url = movie.poster
                 
-        return {"quote": cached_quote.quote, "movie": cached_quote.movie, "poster_url": poster_url}
+        return {"quote": saved_quote.quote, "movie": saved_quote.movie, "poster_url": poster_url}
 
-    return {"quote": "No quote was found for today!"}    
+    return {"quote": None}    
