@@ -8,6 +8,7 @@ import {
   Stack,
   Text,
   Title,
+  Loader
 } from '@mantine/core';
 
 export function QuoteRenderer() {
@@ -20,6 +21,24 @@ export function QuoteRenderer() {
     const { data, error, isLoading } = useSWR('http://localhost:8000/get_quote?date=07/04/2026', quoteFetcher);
 
     console.log(data)
+    if (isLoading) {
+      return (
+        <Container size="sm" style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Stack align="center" gap="md">
+            <Loader size="lg" />
+            <Text c="dimmed">Loading daily quote, this may take a while...</Text>
+          </Stack>
+        </Container>
+      );
+    }
+
+    if (error) {
+      return (
+        <Container size="sm">
+          <Text c="red" ta="center">Failed to load quote. Please try again later.</Text>
+        </Container>
+      );
+    }
 
     return (
       <Container size="sm">
@@ -44,7 +63,4 @@ export function QuoteRenderer() {
       </Container>
 
     )
-
-
-
 }
