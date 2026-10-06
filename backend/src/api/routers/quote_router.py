@@ -45,7 +45,7 @@ async def get_quote_of_the_day(    quodb_client: QuoDBClient = Depends(get_quodb
                 
         return {"quote": saved_quote.quote, "movie": saved_quote.movie, "poster_url": poster_url}
 
-    return {"quote": None}    
+    return {"quote": None, "movie": None, "poster_url": None}    
 
 # TODO
 @router.get("/get_quote")
@@ -80,4 +80,4 @@ async def get_quote(
                 
         return {"quote": saved_quote.quote, "movie": saved_quote.movie, "poster_url": poster_url}
 
-    return {"quote": None}    
+    return {"quote": None, "movie": None, "poster_url": None}    
