@@ -77,7 +77,7 @@ async def full_quote_pipeline(quoDBClient: QuoDBClient, day_to_fetch, llmClient:
         temp_quote_score = 0
 
         for quote in filtered_llm_cropped_quotes:
-            llm_response = await llmClient.query_llm(generate_score_query(quote.quote_doc.title, quote.display_full_quote()))
+            llm_response = await llmClient.query_llm(generate_score_query(quote.quote_doc.title, quote.llm_cropped_quote))
             score = parse_score_response(llm_response.choices[0].message.content)['total']
             logger.info(f"LLM returned a score of {score} for quote {quote.display_full_quote()} - {quote.quote_doc.title}")
             if int(score) > temp_quote_score:
