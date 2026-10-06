@@ -17,7 +17,7 @@ export function QuoteRenderer() {
         return res.json();
     };
     
-    const { data, error, isLoading } = useSWR('http://localhost:8000/quote_of_the_day', quoteFetcher);
+    const { data, error, isLoading } = useSWR('http://localhost:8000/get_quote?date=07/04/2026', quoteFetcher);
 
     console.log(data)
 
@@ -27,9 +27,9 @@ export function QuoteRenderer() {
           <Stack align="center">
 
             <Image
-                src="https://m.media-amazon.com/images/M/MV5BMjE1MDQ4MjI1OV5BMl5BanBnXkFtZTcwNzcwODAzMw@@._V1_QL75_UY562_CR9,0,380,562_.jpg"
+                src={data?.poster_url}
                 radius="md"
-                h={200}
+                h={512}
                 fit="contain"
               />
             

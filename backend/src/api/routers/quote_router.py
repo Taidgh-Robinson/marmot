@@ -23,14 +23,29 @@ async def get_quote_of_the_day(    quodb_client: QuoDBClient = Depends(get_quodb
 
     cached_quote: DateToQuoteRecord = await postgres_client.fetch_quote_by_date(query)
     if cached_quote:
-        return {"quote": cached_quote.quote, "movie": cached_quote.movie}
+        poster_url = None
+        if cached_quote.movie:
+            movie = await postgres_client.fetch_movie(cached_quote.movie)
+            if movie:
+                poster_url = movie.poster
+
+        return {"quote": cached_quote.quote, "movie": cached_quote.movie, "poster_url": poster_url}
         
 
     quotes = await full_quote_pipeline(quodb_client, date, llm_client, postgres_client, omdb_api_client)
-    fake_data = quotes["filtered_quotes"][0]
+    
+    saved_quote = await postgres_client.fetch_quote_by_date(query)
+    
+    if saved_quote:
+        poster_url = None
+        if saved_quote.movie:
+            movie = await postgres_client.fetch_movie(cached_quote.movie)
+            if movie:
+                poster_url = movie.poster
+                
+        return {"quote": cached_quote.quote, "movie": cached_quote.movie, "poster_url": poster_url}
 
-    return {"quote": fake_data.display_full_quote(), "movie": 'ahhh'}
-
+    return {"quote": "No quote was found for today!"}    
 
 # TODO
 @router.get("/get_quote")
@@ -45,10 +60,24 @@ async def get_quote(
     query = date[:5]
     cached_quote = await postgres_client.fetch_quote_by_date(query)
     if cached_quote:
-        return {"quote": cached_quote.quote}
+        poster_url = None
+        if cached_quote.movie:
+            movie = await postgres_client.fetch_movie(cached_quote.movie)
+            if movie:
+                poster_url = movie.poster
+                
+        return {"quote": cached_quote.quote, "movie": cached_quote.movie, "poster_url": poster_url}
 
     quotes = await full_quote_pipeline(quodb_client, date, llm_client, postgres_client, omdb_api_client)
-    fake_data = quotes["filtered_quotes"][0]
 
-    return {"quote": fake_data.display_full_quote()}
-    
+    saved_quote = await postgres_client.fetch_quote_by_date(query)
+    if saved_quote:
+        poster_url = None
+        if saved_quote.movie:
+            movie = await postgres_client.fetch_movie(cached_quote.movie)
+            if movie:
+                poster_url = movie.poster
+                
+        return {"quote": cached_quote.quote, "movie": cached_quote.movie, "poster_url": poster_url}
+
+    return {"quote": "No quote was found for today!"}    
