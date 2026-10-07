@@ -26,7 +26,7 @@ export function QuoteRenderer() {
   };
 
   const { data, error, isLoading } = useSWR(
-    `${API_BASE_URL}/get_quote?date=07/04/2026`,
+    `${API_BASE_URL}/quote_of_the_day`,
     quoteFetcher
   );
 
@@ -36,7 +36,7 @@ export function QuoteRenderer() {
         <Stack align="center" gap="sm">
           <Loader size="md" />
           <Text c="dimmed" size="sm">
-            Loading today's movie quote...
+            Loading today's movie quote, this may take a while...
           </Text>
         </Stack>
       </Center>
@@ -50,6 +50,43 @@ export function QuoteRenderer() {
           Failed to load quote. Please try again later.
         </Text>
       </Center>
+    );
+  }
+
+  if (data.quote === null) {
+    return (
+      <Container size="xs" py={60}>
+        <Paper
+          radius="xl"
+          p="xl"
+          shadow="xl"
+          withBorder
+          style={{
+            background:
+              "linear-gradient(145deg, var(--mantine-color-dark-7), var(--mantine-color-dark-8))",
+          }}
+        >
+          <Stack gap="md" align="center" py="xl">
+            <Text
+              size="xs"
+              tt="uppercase"
+              fw={700}
+              c="dimmed"
+              style={{ letterSpacing: "0.16em" }}
+            >
+              Quote of the day
+            </Text>
+
+            <Title order={2} ta="center">
+              No quote today
+            </Title>
+
+            <Text c="dimmed" ta="center">
+              There isn't a movie quote available for today. Check back tomorrow!
+            </Text>
+          </Stack>
+        </Paper>
+      </Container>
     );
   }
 
