@@ -1,3 +1,4 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import '@mantine/core/styles.css';
 
 import {
@@ -5,19 +6,15 @@ import {
 } from '@mantine/core';
 import { QuoteRenderer } from './components/quote/QuoteRenderer';
 
-function QuoteApp() {
-  
-  return (
-    <div>
-      <QuoteRenderer /> 
-    </div>
-  );
-}
-
 export default function App() {
   return (
     <MantineProvider defaultColorScheme="auto">
-      <QuoteApp />
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<QuoteRenderer />} />
+          <Route path="/:month/:day/:year?" element={<QuoteRenderer />} />
+        </Routes>
+      </BrowserRouter>
     </MantineProvider>
   );
 }

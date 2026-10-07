@@ -1,6 +1,7 @@
 import useSWR from "swr";
 import type { Quote } from "./types";
 import { API_BASE_URL } from "../../config"
+import { useParams } from 'react-router-dom';
 
 import {
   Center,
@@ -25,8 +26,19 @@ export function QuoteRenderer() {
     return res.json();
   };
 
+  const { month, day, year } = useParams();
+
+  // If there is no month or day, we are on the homepage
+  const isHomepage = !month || !day || !year;
+  if (isHomepage) {
+    var fetch_url = `${API_BASE_URL}/quote_of_the_day`
+  }
+  else {
+    var fetch_url = `${API_BASE_URL}/get_quote?date=${month}/${day}/${year}`
+  }
+
   const { data, error, isLoading } = useSWR(
-    `${API_BASE_URL}/quote_of_the_day`,
+    fetch_url,
     quoteFetcher
   );
 

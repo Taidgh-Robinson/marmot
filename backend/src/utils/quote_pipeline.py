@@ -71,7 +71,6 @@ async def full_quote_pipeline(quoDBClient: QuoDBClient, day_to_fetch, llmClient:
         await postgresClient.insert_into_date_to_quote(date_to_quote_record)
 
     if len(filtered_llm_cropped_quotes) > 0:
-
         # Score 
         temp_quote = None
         temp_quote_score = 0
@@ -86,6 +85,7 @@ async def full_quote_pipeline(quoDBClient: QuoDBClient, day_to_fetch, llmClient:
 
         # Save
         movie_title = temp_quote.quote_doc.title
+        movie_data = None
         try:
             movie_data = await omdbAPIClient.get_movie_info(movie_title)
         except Exception as e:
